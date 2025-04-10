@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 25px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff6b81;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      animation: pulse 2s infinite;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #ff758c, #ff7eb3);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 20px 0;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6);
+    }
+
+    h3 {
+      color: #ff758c;
+      font-size: 1.3em;
+      margin: 20px 0 10px;
+      text-align: center;
+    }
+
+    #missContainer {
+      background: rgba(255, 245, 247, 0.8);
+      border-radius: 15px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #missList {
+      list-style: none;
+    }
+
+    #missList li {
+      color: #333;
+      font-size: 1em;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 117, 140, 0.2);
+      transition: background 0.3s;
+    }
+
+    #missList li:last-child {
+      border-bottom: none;
+    }
+
+    #missList li:hover {
+      background: rgba(255, 117, 140, 0.1);
+    }
+
+    /* Scrollbar Styling */
+    #missContainer::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #missContainer::-webkit-scrollbar-thumb {
+      background: #ff758c;
+      border-radius: 10px;
+    }
+
+    #missContainer::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Animation */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Media Queries for Smaller Screens */
+    @media (max-width: 400px) {
+      .container {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 18.em;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 12px;
+      }
+
+      h3 {
+        font-size: 1.1em;
+      }
+
+      #missList li {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hey My Love💖</h1>
+    <button onclick="missAhmed()">I Miss You 💌</button>
+    <h3>Times Ahmed Missed You:</h3>
+    <div id="missContainer">
+      <ul id="missList"></ul>
+    </div>
+  </div>
+  <script>
+    const API_BASE = 'http://localhost:3000';
+  
+    async function missAhmed() {
+      try {
+        await fetch(`${API_BASE}/missed`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ who: 'gf' })
+        });
+        alert('Ahmed has been notified that you miss him 💖');
+      } catch (error) {
+        alert('ohh shit my love [fucking server issue]');
+      }
+    }
+  
+    async function getMisses() {
+      try {
+        const res = await fetch(`${API_BASE}/missed?who=ahmed`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        
+        const messages = await res.json();
+        const ul = document.getElementById('missList');
+        ul.innerHTML = '';
+  
+        if (messages.length === 0) {
+          ul.innerHTML = '<li>No new missed notifications</li>';
+          return;
+        }
+  
+        messages.forEach(entry => {
+          const li = document.createElement('li');
+          li.innerText = `Ahmed missed you at ${new Date(entry.time).toLocaleString()}`;
+          ul.appendChild(li);
+        });
+  
+        await fetch(`${API_BASE}/missed/seen`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ who: 'ahmed' })
+        });
+  
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('missList').innerHTML = '<li>Error loading messages</li>';
+      }
+    }
+  
+    getMisses();
+    setInterval(getMisses, 30000);
+  </script>
+</body>
+</html>

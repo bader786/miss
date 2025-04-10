@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Georgia', serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffccd5 0%, #ffb6c1 50%, #ff9cbb 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      padding: 10px;
+    }
+
+    /* Floating Hearts */
+    .hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      width: 15px; /* Smaller for mobile */
+      height: 15px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255, 107, 129, 0.5)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+      background-size: contain;
+      animation: floatHearts 4s linear infinite;
+      opacity: 0.6;
+    }
+
+    .container {
+      background: rgba(255, 245, 247, 0.95);
+      padding: 20px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+      border: 1px solid rgba(255, 182, 193, 0.5);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 350px; /* Constrain width for mobile */
+      overflow: hidden;
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+      opacity: 0.15;
+      animation: sparkle 5s infinite;
+      pointer-events: none;
+    }
+
+    h1 {
+      color: #ff6b81;
+      font-size: 1.8em; /* Smaller for mobile */
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px rgba(255, 107, 129, 0.3);
+      animation: heartbeat 1.5s infinite;
+      font-style: italic;
+      line-height: 1.2;
+    }
+
+    button {
+      padding: 12px 25px; /* Adjusted for touch */
+      background: linear-gradient(45deg, #ff9cbb, #ff6b81);
+      border: none;
+      border-radius: 15px;
+      color: white;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 107, 129, 0.4);
+      position: relative;
+      overflow: hidden;
+      width: 100%; /* Full-width button */
+      max-width: 250px; /* Limit button width */
+      margin: 0 auto;
+      display: block;
+    }
+
+    button::after {
+      content: '♥';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8em;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    button:hover::after,
+    button:active::after { /* Added :active for touch feedback */
+      opacity: 0.3;
+    }
+
+    button:hover,
+    button:active {
+      transform: scale(1.05); /* Slightly smaller scale for mobile */
+      box-shadow: 0 6px 15px rgba(255, 107, 129, 0.6);
+      background: linear-gradient(45deg, #ff6b81, #ff9cbb);
+    }
+
+    /* Animations */
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      20% { transform: scale(1.05); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      50% { opacity: 0.6; }
+      100% {
+        transform: translateY(-100vh) translateX(calc(30px * var(--random-x))) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sparkle {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Mobile-Specific Adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 5px;
+      }
+
+      .container {
+        padding: 15px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 1.6em;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+      }
+
+      .heart {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts-container"></div>
+  <div class="container">
+    <h1>Hey Ahmed 💕</h1>
+    <button onclick="missHer()">Miss you🌹</button>
+  </div>
+  <script>
+    const API_BASE = 'http://localhost:3000';
+
+    async function missHer() {
+      try {
+        const response = await fetch(`${API_BASE}/missed`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ who: 'ahmed' })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        alert('sent her');
+      } catch (error) {
+        console.error('Error:', error);
+        alert(' Something went wrong 💔');
+      }
+    }
+
+    // Floating Hearts Effect
+    document.addEventListener('DOMContentLoaded', () => {
+      const heartsContainer = document.getElementById('hearts-container');
+
+      function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDuration = `${2.5 + Math.random() * 2}s`; /* Faster for mobile */
+        heart.style.setProperty('--random-x', Math.random() > 0.5 ? 1 : -1);
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 4500); /* Shorter lifespan */
+      }
+
+      setInterval(createHeart, 600); /* Slightly less frequent */
+    });
+  </script>
+</body>
+</html>

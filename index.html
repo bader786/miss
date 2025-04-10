@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Georgia', serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffccd5 0%, #ffb6c1 50%, #ff9cbb 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      background: rgba(255, 245, 247, 0.95);
+      border-radius: 30px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 15px 40px rgba(255, 107, 129, 0.3);
+      border: 2px solid rgba(255, 182, 193, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+      opacity: 0.2;
+      animation: sparkle 6s infinite;
+      pointer-events: none; /* Added to fix click issues */
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff6b81;
+      font-size: 2.2em;
+      margin-bottom: 25px;
+      text-shadow: 2px 2px 4px rgba(255, 107, 129, 0.3);
+      animation: heartbeat 1.5s infinite;
+      letter-spacing: 1px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px dashed #ffb6c1;
+      border-radius: 20px;
+      background: rgba(255, 240, 245, 0.9);
+      color: #ff6b81;
+      font-size: 1.2em;
+      text-align: center;
+      outline: none;
+      box-shadow: inset 0 2px 5px rgba(255, 107, 129, 0.1);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .keypad button {
+      padding: 15px;
+      background: linear-gradient(45deg, #ff9cbb, #ff6b81);
+      border: none;
+      border-radius: 15px;
+      color: white;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 107, 129, 0.4);
+    }
+
+    .keypad button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(255, 107, 129, 0.6);
+      background: linear-gradient(45deg, #ff6b81, #ff9cbb);
+    }
+
+    .keypad button:nth-child(10) {
+      background: linear-gradient(45deg, #ffb6c1, #ffccd5);
+      color: #ff6b81;
+    }
+
+    .keypad button:nth-child(12) {
+      background: linear-gradient(45deg, #ff758c, #ff9cbb);
+      font-weight: bold;
+    }
+
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      20% { transform: scale(1.1); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes sparkle {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 400px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      input[type="password"] {
+        font-size: 1em;
+        padding: 12px;
+      }
+
+      .keypad button {
+        font-size: 1em;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Here you go...</h1>
+    <input type="password" id="passcode" readonly placeholder="Enter our secret...">
+    <div class="keypad">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button>C</button>
+      <button>0</button>
+      <button>Enter</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const passcodeInput = document.getElementById('passcode');
+      const buttons = document.querySelectorAll('.keypad button');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const text = button.textContent;
+          
+          if (text === 'C') {
+            passcodeInput.value = '';
+          } else if (text === 'Enter') {
+            checkCode();
+          } else {
+            passcodeInput.value += text;
+          }
+        });
+      });
+
+      function checkCode() {
+        const code = passcodeInput.value.trim();
+        if (code === '143') {
+          window.location.href = 'sadaf.html';
+        } else if (code === '1432') {
+          window.location.href = 'ahmed.html'; // Fixed path
+        } else {
+          alert('Oh no, my love! Our hearts aren’t aligned yet... Try again, my darling 💕');
+          passcodeInput.value = '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
